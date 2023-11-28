@@ -1,4 +1,4 @@
-package by.harlap.hostel.crud;
+package by.harlap.hostel.controller;
 
 import by.harlap.hostel.enumerations.Role;
 import jakarta.servlet.ServletException;

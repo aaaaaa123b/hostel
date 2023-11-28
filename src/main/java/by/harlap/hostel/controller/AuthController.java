@@ -1,4 +1,4 @@
-package by.harlap.hostel.crud;
+package by.harlap.hostel.controller;
 
 import by.harlap.hostel.model.User;
 import by.harlap.hostel.repository.impl.UserRepositoryImpl;
@@ -14,20 +14,21 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@WebServlet(urlPatterns = "/")
-public class RegistelController extends HttpServlet {
+@WebServlet(urlPatterns = "/login", name = "AuthController")
+public class AuthController extends HttpServlet {
+
     UserRepository userRepository;
     ConnectionManager connectionManager;
 
     @Override
     public void init() {
         this.connectionManager = new ConnectionManager();
-        this.userRepository = new UserRepositoryImpl(connectionManager);
+        this.userRepository= new UserRepositoryImpl(connectionManager);
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/WEB-INF/view/register.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(req, resp);
 
     }
 
@@ -39,7 +40,7 @@ public class RegistelController extends HttpServlet {
 
         final String login = fields.get("login");
         final String password = fields.get("password");
-        User user = userRepository.addUser(login, password);
+        User user = userRepository.getUserByUsername(login);
 
         if (user.getPassword().equals(password)) {
             req.getSession().setAttribute("roles", user.getRoles());
@@ -68,4 +69,5 @@ public class RegistelController extends HttpServlet {
 
         return paramMap;
     }
+
 }
