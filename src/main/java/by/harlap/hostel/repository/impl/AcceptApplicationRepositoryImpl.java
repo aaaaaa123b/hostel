@@ -3,6 +3,8 @@ package by.harlap.hostel.repository.impl;
 import by.harlap.hostel.dto.ReservationDto;
 import by.harlap.hostel.repository.AcceptApplicationRepository;
 import by.harlap.hostel.util.ConnectionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,6 +15,7 @@ import java.util.List;
 
 public class AcceptApplicationRepositoryImpl implements AcceptApplicationRepository {
     private final ConnectionManager connectionManager;
+    private static final Logger logger = LoggerFactory.getLogger(AcceptApplicationRepositoryImpl.class);
 
     public AcceptApplicationRepositoryImpl(ConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
@@ -100,7 +103,7 @@ public class AcceptApplicationRepositoryImpl implements AcceptApplicationReposit
 
                     return reservation;
                 } else {
-                    System.out.println("Failed to add reservation.");
+                    logger.warn("Failed to add reservation");
                     return null;
                 }
             }

@@ -4,6 +4,8 @@ import by.harlap.hostel.enumerations.Role;
 import by.harlap.hostel.model.User;
 import by.harlap.hostel.util.ConnectionManager;
 import by.harlap.hostel.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,6 +20,7 @@ public class UserRepositoryImpl implements UserRepository {
     public UserRepositoryImpl(ConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
     }
+    private static final Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
 
     @Override
     public List<User> findAll() {
@@ -95,7 +98,7 @@ public class UserRepositoryImpl implements UserRepository {
                     user.setRoles(role);
                     return user;
                 } else {
-                    System.out.println("Failed to add user.");
+                    logger.warn("Failed to add user");
                     return null;
                 }
             }

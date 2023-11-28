@@ -32,9 +32,9 @@ public class ReservationController extends HttpServlet {
         String reservationIdStr = request.getParameter("hostelId");
 
         if (action != null && reservationIdStr != null) {
-            long reservationId = Long.parseLong(reservationIdStr);
+            long hostelId = Long.parseLong(reservationIdStr);
 
-            Hostel hostel = acceptReservation((int) reservationId);
+            Hostel hostel = hostelRepository.findById((int) hostelId);
             request.setAttribute("reservation", hostel);
 
         }
@@ -52,18 +52,13 @@ public class ReservationController extends HttpServlet {
             long hostelId = Long.parseLong(hostelIdStr);
 
             if ("Accept".equals(action)) {
-                Hostel hostel = acceptReservation((int) hostelId);
+                Hostel hostel = hostelRepository.findById((int) hostelId);
                 request.setAttribute("reservation", hostel);
             }
         }
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/book_page.jsp");
         dispatcher.forward(request, response);
-    }
-
-    private Hostel acceptReservation(int id) {
-        return hostelRepository.findById(id);
-
     }
 
 
