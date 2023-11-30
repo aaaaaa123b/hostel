@@ -73,28 +73,24 @@
 
 <form action="<c:url value='/hostelReservation' />" method="get">
 
-    <c:set var="hostel" value="${requestScope.reservation}"/>
-
     <label>Тип бронирования:</label>
-    <p>Количество свободных комнат <c:out value="${hostel.capacity}"/></p>
+
     <label>
         <select name="reservationType">
             <option value="бронирование">Бронирование</option>
             <option value="полная оплата">Полная оплата</option>
         </select>
     </label>
-
-    <label>Number of Seats:</label>
-    <label>
-        <input type="number" name="numberOfSeats">
-    </label>
+    <c:set var="apartment" value="${requestScope.apartment}"/>
 
     <div class="action-buttons">
-        <input type="hidden" name="hostelId" value="${hostel.id}">
+        <input type="hidden" name="apartment_id" value="${apartment.id}">
+        <input type="hidden" name="apartment_number" value="${apartment.room_number}">
+        <input type="hidden" name="type" value="${apartment.type}">
         <input type="submit" name="action" value="Забронировать" class="accept">
     </div>
 
-    <a href="<c:url value='/hostels' />" class="button">Выход</a>
+    <a href="<c:url value='/apartments' />" class="button">Выход</a>
 </form>
 </body>
 </html>

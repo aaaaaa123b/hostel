@@ -1,8 +1,7 @@
 package by.harlap.hostel.controller;
 
-import by.harlap.hostel.model.User;
+import by.harlap.hostel.dto.UserDto;
 import by.harlap.hostel.repository.impl.UserRepositoryImpl;
-import by.harlap.hostel.util.ConnectionManager;
 import by.harlap.hostel.repository.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,13 +15,11 @@ import java.util.Map;
 
 @WebServlet(urlPatterns = "/")
 public class RegistelController extends HttpServlet {
-    UserRepository userRepository;
-    ConnectionManager connectionManager;
+    private UserRepository userRepository;
 
     @Override
     public void init() {
-        this.connectionManager = new ConnectionManager();
-        this.userRepository = new UserRepositoryImpl(connectionManager);
+        this.userRepository = new UserRepositoryImpl();
     }
 
     @Override
@@ -39,7 +36,7 @@ public class RegistelController extends HttpServlet {
 
         final String login = fields.get("login");
         final String password = fields.get("password");
-        User user = userRepository.addUser(login, password);
+        UserDto user = userRepository.addUser(login, password);
 
         if (user.getPassword().equals(password)) {
             req.getSession().setAttribute("roles", user.getRoles());

@@ -48,7 +48,7 @@
         <thead>
         <tr>
             <th>Reservation ID</th>
-            <th>Number of Seats</th>
+            <th>Room number</th>
             <th>Reservation Type</th>
             <th>User id</th>
             <th>Hostel id</th>
@@ -58,7 +58,7 @@
         <c:forEach var="reservation" items="${requestScope.accept_applications}">
             <tr>
                 <td>${reservation.id}</td>
-                <td>${reservation.numberOfSeats}</td>
+                <td>${reservation.room_number}</td>
                 <td>${reservation.type}</td>
                 <td>${reservation.user_id}</td>
                 <td>${reservation.hostel_id}</td>

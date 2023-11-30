@@ -1,10 +1,9 @@
 package by.harlap.hostel.controller;
 
 import by.harlap.hostel.enumerations.Role;
-import by.harlap.hostel.model.Hostel;
-import by.harlap.hostel.repository.HostelRepository;
-import by.harlap.hostel.repository.impl.HostelRepositoryImpl;
-import by.harlap.hostel.util.ConnectionManager;
+import by.harlap.hostel.model.Apartment;
+import by.harlap.hostel.repository.ApartmentRepository;
+import by.harlap.hostel.repository.impl.ApartmentRepositoryImpl;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,15 +15,13 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(urlPatterns = "/hostels")
+@WebServlet(urlPatterns = "/apartments")
 public class HostelController extends HttpServlet {
-    HostelRepository hostelRepository;
-    ConnectionManager connectionManager;
+    private ApartmentRepository apartmentRepository;
 
     @Override
     public void init() {
-        this.connectionManager = new ConnectionManager();
-        this.hostelRepository = new HostelRepositoryImpl(connectionManager);
+        this.apartmentRepository = new ApartmentRepositoryImpl();
     }
 
     @Override
@@ -35,14 +32,13 @@ public class HostelController extends HttpServlet {
         Role adminRoles = (Role) session.getAttribute("roles");
 
         if (adminRoles != null && adminRoles.equals(Role.USER)) {
-            List<Hostel> reservationList = hostelRepository.findAll();
 
+            List<Apartment> reservationList = apartmentRepository.findAll();
             request.setAttribute("hostelList", reservationList);
 
             request.getRequestDispatcher("/WEB-INF/view/user_page.jsp").forward(request, response);
         } else {
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/error.jsp");
-            dispatcher.forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/view/error.jsp").forward(request, response);
         }
     }
 

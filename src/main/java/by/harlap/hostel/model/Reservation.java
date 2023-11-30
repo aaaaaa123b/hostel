@@ -4,7 +4,15 @@ public class Reservation {
 
     private int id;
     private String type;
-    private int numberOfSeats;
+    private int room_number;
+
+    public int getRoom_number() {
+        return room_number;
+    }
+
+    public void setRoom_number(int room_number) {
+        this.room_number = room_number;
+    }
 
     public int getId() {
         return id;
@@ -22,11 +30,5 @@ public class Reservation {
         this.type = type;
     }
 
-    public int getNumberOfSeats() {
-        return numberOfSeats;
-    }
 
-    public void setNumberOfSeats(int numberOfSeats) {
-        this.numberOfSeats = numberOfSeats;
-    }
 }

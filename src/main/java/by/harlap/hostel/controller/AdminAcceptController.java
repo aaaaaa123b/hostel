@@ -4,7 +4,6 @@ import by.harlap.hostel.dto.ReservationDto;
 import by.harlap.hostel.enumerations.Role;
 import by.harlap.hostel.repository.AcceptApplicationRepository;
 import by.harlap.hostel.repository.impl.AcceptApplicationRepositoryImpl;
-import by.harlap.hostel.util.ConnectionManager;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,13 +18,12 @@ import java.util.List;
 @WebServlet(urlPatterns = "/adminList")
 public class AdminAcceptController extends HttpServlet {
 
-    AcceptApplicationRepository applicationRepository;
-    ConnectionManager connectionManager;
+    private AcceptApplicationRepository applicationRepository;
 
     @Override
     public void init() {
-        this.connectionManager = new ConnectionManager();
-        this.applicationRepository = new AcceptApplicationRepositoryImpl(connectionManager);
+
+        this.applicationRepository = new AcceptApplicationRepositoryImpl();
     }
 
     @Override

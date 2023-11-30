@@ -4,7 +4,7 @@ import by.harlap.hostel.enumerations.Role;
 
 public class User {
 
-    private Integer id;
+    private int id;
     private String login;
     private String password;
     Role roles;
@@ -13,7 +13,7 @@ public class User {
 
     }
 
-    public User(Integer id, String login, String password, Role roles) {
+    public User(int id, String login, String password, Role roles) {
         this.id = id;
         this.login = login;
         this.password = password;

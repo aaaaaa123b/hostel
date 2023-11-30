@@ -1,13 +1,18 @@
 package by.harlap.hostel.repository;
 
-import by.harlap.hostel.model.User;
+import by.harlap.hostel.dto.UserDto;
 
 import java.util.List;
 
 public interface UserRepository {
 
-    User getUserByUsername(String login);
+    UserDto getUserByUsername(String login);
 
-    User addUser(String login, String password);
-    List<User> findAll();
+    UserDto addUser(String login, String password);
+
+    List<UserDto> findAll();
+
+    UserDto updateUser(int userId, UserDto user);
+
+    UserDto findUserById(int user_id);
 }

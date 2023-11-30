@@ -5,7 +5,33 @@ public class ReservationDto {
     private int user_id;
     private int hostel_id;
     private String type;
-    private int numberOfSeats;
+    private int room_number;
+    private String hostel_name;
+    private String application_type;
+
+    public String getHostel_name() {
+        return hostel_name;
+    }
+
+    public void setHostel_name(String hostel_name) {
+        this.hostel_name = hostel_name;
+    }
+
+    public String getApplication_type() {
+        return application_type;
+    }
+
+    public void setApplication_type(String application_type) {
+        this.application_type = application_type;
+    }
+
+    public int getRoom_number() {
+        return room_number;
+    }
+
+    public void setRoom_number(int room_number) {
+        this.room_number = room_number;
+    }
 
     public int getUser_id() {
         return user_id;
@@ -39,11 +65,5 @@ public class ReservationDto {
         this.type = type;
     }
 
-    public int getNumberOfSeats() {
-        return numberOfSeats;
-    }
 
-    public void setNumberOfSeats(int numberOfSeats) {
-        this.numberOfSeats = numberOfSeats;
-    }
 }

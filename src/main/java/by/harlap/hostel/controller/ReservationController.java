@@ -1,9 +1,8 @@
 package by.harlap.hostel.controller;
 
-import by.harlap.hostel.model.Hostel;
-import by.harlap.hostel.repository.impl.HostelRepositoryImpl;
-import by.harlap.hostel.util.ConnectionManager;
-import by.harlap.hostel.repository.HostelRepository;
+import by.harlap.hostel.model.Apartment;
+import by.harlap.hostel.repository.ApartmentRepository;
+import by.harlap.hostel.repository.impl.ApartmentRepositoryImpl;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,27 +15,24 @@ import java.io.IOException;
 @WebServlet(urlPatterns = "/reservationServlet")
 public class ReservationController extends HttpServlet {
 
-    HostelRepository hostelRepository;
-    ConnectionManager connectionManager;
+    private ApartmentRepository apartmentRepository;
 
     @Override
     public void init() {
-        this.connectionManager = new ConnectionManager();
-        this.hostelRepository = new HostelRepositoryImpl(connectionManager);
+        this.apartmentRepository = new ApartmentRepositoryImpl();
     }
 
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String action = request.getParameter("action");
-        String reservationIdStr = request.getParameter("hostelId");
+        String reservationIdStr = request.getParameter("apartmentId");
 
         if (action != null && reservationIdStr != null) {
             long hostelId = Long.parseLong(reservationIdStr);
 
-            Hostel hostel = hostelRepository.findById((int) hostelId);
-            request.setAttribute("reservation", hostel);
-
+            Apartment apartment = apartmentRepository.findById((int) hostelId);
+            request.setAttribute("apartment", apartment);
         }
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/book_page.jsp");
@@ -46,15 +42,11 @@ public class ReservationController extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String action = request.getParameter("action");
-        String hostelIdStr = request.getParameter("hostelId");
+        String apartmentId = request.getParameter("apartmentId");
 
-        if (action != null && hostelIdStr != null) {
-            long hostelId = Long.parseLong(hostelIdStr);
-
-            if ("Accept".equals(action)) {
-                Hostel hostel = hostelRepository.findById((int) hostelId);
-                request.setAttribute("reservation", hostel);
-            }
+        if ("Accept".equals(action) && apartmentId != null) {
+            Apartment apartment = apartmentRepository.findById(Integer.parseInt(apartmentId));
+            request.setAttribute("apartment", apartment);
         }
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/book_page.jsp");

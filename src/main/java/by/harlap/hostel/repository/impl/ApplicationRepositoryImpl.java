@@ -1,8 +1,9 @@
 package by.harlap.hostel.repository.impl;
 
 import by.harlap.hostel.dto.ReservationDto;
+import by.harlap.hostel.exception.NoSuchEntityException;
 import by.harlap.hostel.repository.ApplicationRepository;
-import by.harlap.hostel.util.ConnectionManager;
+import by.harlap.hostel.util.ConnectionPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,16 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ApplicationRepositoryImpl implements ApplicationRepository {
+    private final ConnectionPool connectionPool = ConnectionPool.getInstance();
 
-    private final ConnectionManager connectionManager;
     private static final Logger logger = LoggerFactory.getLogger(ApplicationRepositoryImpl.class);
-    public ApplicationRepositoryImpl(ConnectionManager connectionManager) {
-        this.connectionManager = connectionManager;
-    }
+
 
     @Override
     public ReservationDto findById(int id) {
-        final Connection connection = connectionManager.getConnection();
+        Connection connection = connectionPool.getConnection();
         String query = "SELECT * FROM applications WHERE id = ?";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -34,25 +33,29 @@ public class ApplicationRepositoryImpl implements ApplicationRepository {
                 final ReservationDto reservation = new ReservationDto();
                 reservation.setId(rs.getInt("id"));
                 reservation.setType(rs.getString("type"));
-                reservation.setNumberOfSeats(rs.getInt("number_of_seats"));
+                reservation.setRoom_number(rs.getInt("room_number"));
                 reservation.setUser_id(rs.getInt("user_id"));
                 reservation.setHostel_id(rs.getInt("hostel_id"));
+                reservation.setApplication_type(rs.getString("application_type"));
+                reservation.setHostel_name(rs.getString("hostel_name"));
 
                 return reservation;
             } else {
                 String message = "Reservation with id %d not found.".formatted(id);
-                throw new RuntimeException(message);
+                throw new NoSuchEntityException(message);
 
             }
 
         } catch (SQLException e) {
             throw new RuntimeException("Error processing SQL query", e);
+        } finally {
+            connectionPool.closeConnection(connection);
         }
     }
 
     @Override
     public List<ReservationDto> findAll() {
-        final Connection connection = connectionManager.getConnection();
+        Connection connection = connectionPool.getConnection();
         String query = "SELECT * FROM applications";
         List<ReservationDto> reservations = new ArrayList<>();
 
@@ -64,9 +67,12 @@ public class ApplicationRepositoryImpl implements ApplicationRepository {
                 ReservationDto reservation = new ReservationDto();
                 reservation.setId(rs.getInt("id"));
                 reservation.setType(rs.getString("type"));
-                reservation.setNumberOfSeats(rs.getInt("number_of_seats"));
+                reservation.setRoom_number(rs.getInt("room_number"));
                 reservation.setUser_id(rs.getInt("user_id"));
                 reservation.setHostel_id(rs.getInt("hostel_id"));
+                reservation.setApplication_type(rs.getString("application_type"));
+                reservation.setHostel_name(rs.getString("hostel_name"));
+
                 reservations.add(reservation);
             }
 
@@ -74,15 +80,17 @@ public class ApplicationRepositoryImpl implements ApplicationRepository {
 
         } catch (SQLException e) {
             throw new RuntimeException("Error processing SQL query", e);
+        } finally {
+            connectionPool.closeConnection(connection);
         }
     }
 
 
     @Override
-    public ReservationDto addReservation(int user_id, int hostel_id, String type, int numberOfSeats) {
+    public ReservationDto addReservation(int user_id, int hostel_id, String type, int numberOfSeats, String hostel_name, String applicationType) {
 
-        Connection connection = connectionManager.getConnection();
-        final String query = "INSERT INTO applications (user_id,hostel_id, number_of_seats,type) VALUES (?, ?,?,?) RETURNING id";
+        Connection connection = connectionPool.getConnection();
+        final String query = "INSERT INTO applications (user_id,hostel_id, room_number,type,hostel_name,application_type) VALUES (?, ?,?,?,?,?) RETURNING id";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
@@ -90,6 +98,8 @@ public class ApplicationRepositoryImpl implements ApplicationRepository {
             preparedStatement.setInt(2, hostel_id);
             preparedStatement.setInt(3, numberOfSeats);
             preparedStatement.setString(4, type);
+            preparedStatement.setString(5, hostel_name);
+            preparedStatement.setString(6, applicationType);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -97,9 +107,11 @@ public class ApplicationRepositoryImpl implements ApplicationRepository {
                     final ReservationDto reservation = new ReservationDto();
                     reservation.setId((int) id);
                     reservation.setType(type);
-                    reservation.setNumberOfSeats(numberOfSeats);
+                    reservation.setRoom_number(numberOfSeats);
                     reservation.setUser_id(user_id);
                     reservation.setHostel_id(hostel_id);
+                    reservation.setApplication_type(applicationType);
+                    reservation.setHostel_name(hostel_name);
                     return reservation;
                 } else {
                     logger.warn("Failed to add reservation");
@@ -109,48 +121,25 @@ public class ApplicationRepositoryImpl implements ApplicationRepository {
 
         } catch (SQLException e) {
             throw new RuntimeException("Error executing SQL query", e);
+        } finally {
+            connectionPool.closeConnection(connection);
         }
     }
 
 
     @Override
     public void deleteById(Long id) {
-        Connection connection = connectionManager.getConnection();
+        Connection connection = connectionPool.getConnection();
         final String query = "DELETE FROM applications WHERE id = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setLong(1, id);
             preparedStatement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException("Ошибка при выполнении SQL-запроса", e);
+            throw new RuntimeException("Error executing SQL query", e);
+        } finally {
+            connectionPool.closeConnection(connection);
         }
     }
-
-
-//    @Override
-//    public Reservation updateReservation(int id, Reservation reservation) {
-//        Connection connection = connectionManager.getConnection();
-//
-//        String query = "UPDATE applications SET type = ?, number_of_seats = ? WHERE id = ?";
-//        try {
-//            PreparedStatement preparedStatement = connection.prepareStatement(query);
-//            preparedStatement.setString(1, reservation.getType());
-//            preparedStatement.setInt(2, reservation.getNumberOfSeats());
-//            preparedStatement.setLong(3, id);
-//
-//            int result = preparedStatement.executeUpdate();
-//
-//            if (result == 0) {
-//                String message = "Reservation with id %d not found.".formatted(id);
-//                throw new RuntimeException(message);
-//            }
-//
-//            reservation.setId(id);
-//            return reservation;
-//
-//        } catch (SQLException e) {
-//            throw new RuntimeException("Error processing SQL query", e);
-//        }
-//    }
 
 }

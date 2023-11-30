@@ -95,28 +95,28 @@
 </head>
 <body>
 
-<h1>Список отелей</h1>
+<h1>Список свободных комнат</h1>
 
 <c:if test="${not empty requestScope.hostelList}">
     <table border="1">
         <thead>
         <tr>
-            <th>Hostel name</th>
-            <th>Location</th>
-            <th>Capacity</th>
-            <th>Action</th>
+            <th>Тип</th>
+            <th>Номер комнаты</th>
+            <th>Имя отеля</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
-        <c:forEach items="${requestScope.hostelList}" var="hostel">
+        <c:forEach items="${requestScope.hostelList}" var="apartment">
 
             <tr>
-                <td>${hostel.hostel_name}</td>
-                <td>${hostel.location}</td>
-                <td>${hostel.capacity}</td>
+                <td>${apartment.type}</td>
+                <td>${apartment.room_number}</td>
+                <td>${apartment.hostel_name}</td>
                 <td class="action-buttons">
                     <form action="${pageContext.request.contextPath}/reservationServlet" method="get">
-                        <input type="hidden" name="hostelId" value="${hostel.id}">
+                        <input type="hidden" name="apartmentId" value="${apartment.id}">
                         <input type="submit" name="action" value="Забронировать" class="accept">
                     </form>
                 </td>

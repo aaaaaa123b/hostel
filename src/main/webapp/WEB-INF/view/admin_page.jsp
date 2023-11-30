@@ -71,6 +71,10 @@
     <button type="submit" class="button">Непринятые заявки</button>
 </form>
 
+<form action="${pageContext.request.contextPath}/users" method="get">
+    <button type="submit" class="button">Пользователи</button>
+</form>
+
 <a href="${pageContext.request.contextPath}/logout" class="button">Выход</a>
 
 </body>
